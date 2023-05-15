@@ -1,0 +1,138 @@
+name: Test case configurations for item
+description: Configurations to test given cases
+
+variables:
+
+  item1:
+    name: "item1"
+    type: "type"
+    customer_id: "string"
+    sync_policy: "string"
+    edge_mac: "string"
+    id: "item1"
+    source_timestamp: 0
+    created_by: "string"
+    resources: []
+
+  item2:
+    name: "item2"
+    type: "type"
+    customer_id: "string"
+    sync_policy: "string"
+    edge_mac: "string"
+    id: "item2"
+    source_timestamp: 0
+    created_by: "string"
+    resources: [ ]
+
+  item3:
+    name: "item3"
+    type: "type"
+    customer_id: "string"
+    sync_policy: "string"
+    edge_mac: "string"
+    id: "item3"
+    source_timestamp: 0
+    created_by: "string"
+    resources: [ ]
+
+  updated_item1:
+    name: "item1_updated"
+    type: "type_updated"
+    customer_id: "string_updated"
+    sync_policy: "string_updated"
+    edge_mac: "string_updated"
+    modified_by: "string_updated"
+    modified_at: 1
+    id: "item1"
+    source_timestamp: 0
+    created_by: "string"
+    resources: [ ]
+
+  patched_item1:
+    name: "item1_patched"
+    type: "type_patched"
+    customer_id: "string_patched"
+    sync_policy: "string_patched"
+    edge_mac: "string_patched"
+    modified_by: "SYNC"
+    modified_at: 2
+    id: "item1"
+    source_timestamp: 0
+    created_by: "string"
+    resources: [ ]
+
+  relation1:
+    parent_id: "item1"
+    child_id: "item2"
+    id: "item1 -> item2"
+    source_timestamp: 0
+    created_by: "string"
+
+  updated_relation1:
+    id: "item1 -> item2"
+    source_timestamp: 0
+    created_by: "string"
+    modified_by: "string"
+    modified_at: 0
+    parent_id: "item1"
+    child_id: "item2"
+
+  relation2:
+    parent_id: "item2"
+    child_id: "item3"
+    id: "item2 -> item3"
+    source_timestamp: 0
+    created_by: "string"
+
+  resource1:
+    name: "resource1"
+    instance_id: "string"
+    type: "string"
+    id: "resource1"
+    item_id: "item1"
+    source_timestamp: 0
+    created_by: "string"
+
+  updated_resource1:
+    name: "updated_resource1"
+    instance_id: "updated_string"
+    type: "updated_string"
+    source_timestamp: 0
+    created_by: "string"
+    modified_by: "updated_string"
+    modified_at: 1
+    parameters: []
+    item_id: "item1"
+
+  patched_resource1:
+    name: "patched_resource1"
+    instance_id: "patched_string"
+    type: "patched_string"
+    source_timestamp: 0
+    created_by: "string"
+    modified_by: "patched_string"
+    modified_at: 2
+    parameters: []
+    item_id: "item1"
+    id: "resource1"
+
+  resource2:
+    name: "resource2"
+    instance_id: "string2"
+    type: "string2"
+    id: "resource2"
+    source_timestamp: 0
+    created_by: "string2"
+    parameters: []
+    item_id: "item2"
+
+  resource3:
+    name: "resource3"
+    instance_id: "string3"
+    type: "string3"
+    id: "resource3"
+    source_timestamp: 0
+    created_by: "string3"
+    parameters: []
+    item_id: "item3"

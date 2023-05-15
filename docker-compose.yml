@@ -1,0 +1,185 @@
+version: '3.1'
+
+services:
+
+  kronos-db:
+    image: postgres:14.2
+    container_name: database_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kronos-admin
+      POSTGRES_DB: kronos-db-develop
+    networks:
+      - kronos-infra
+    volumes:
+      - kronos_postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: none
+
+  kronos-vernemq:
+    container_name: mqtt_container
+    image: vernemq/vernemq:1.11.0
+    restart: always
+    ports:
+      - "1883:1883"
+    networks:
+      - kronos-infra
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+      DOCKER_VERNEMQ_LISTENER__TCP__ALLOWED_PROTOCOL_VERSIONS: "3,4,5"
+    logging:
+      driver: none
+
+  kronos-response:
+    container_name: faust_response_manager_container
+    build:
+      context: ./server
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+        GITLAB_USERNAME: ${GITLAB_USERNAME}
+        GITLAB_PASSWORD: ${GITLAB_PASSWORD}
+    image: kronos-server_kronos-rest:latest
+    depends_on:
+      - kronos-db
+      - kronos-broker
+      - kronos-request
+    networks:
+      - kronos-infra
+    env_file:
+      - .env
+    restart: always
+    command: dockerize -wait tcp://kronos-db:5432 -wait tcp://kronos-broker:9092 -wait http://kronos-request:6066 -timeout 300s -wait-retry-interval 5s bash -c "faust -A kronos.service.manager worker -l info"
+    healthcheck:
+      test: curl --fail -s localhost:6066 || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  kronos-request:
+    container_name: faust_request_manager_container
+    build:
+      context: ./server
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+        GITLAB_USERNAME: ${GITLAB_USERNAME}
+        GITLAB_PASSWORD: ${GITLAB_PASSWORD}
+    image: kronos-server_kronos-rest:latest
+    depends_on:
+      - kronos-db
+      - kronos-broker
+    networks:
+      - kronos-infra
+    env_file:
+      - .env
+    volumes:
+      - ./config.json:/config.json
+    restart: always
+    command: dockerize -wait tcp://kronos-db:5432 -wait tcp://kronos-broker:9092 -timeout 300s -wait-retry-interval 5s bash -c "faust -A faust_utils.manager worker -l info"
+    healthcheck:
+      test: curl --fail -s localhost:6066 || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  kronos-rest:
+    container_name: fastapi_api_gateway_container
+    build:
+      context: ./server
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+        GITLAB_USERNAME: ${GITLAB_USERNAME}
+        GITLAB_PASSWORD: ${GITLAB_PASSWORD}
+    depends_on:
+      - kronos-db
+      - kronos-broker
+      - kronos-redis
+      - kronos-response
+    command: sh -c "dockerize -wait tcp://kronos-db:5432 -wait http://kronos-response:6066 -timeout 300s -wait-retry-interval 5s /start.sh"
+    networks:
+      - kronos-infra
+    env_file:
+      - .env
+    volumes:
+      - ./docs:/docs
+    ports:
+      - "8081:80"
+    healthcheck:
+      test: curl --fail -s localhost/api/v1/health || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  kronos-redis:
+    container_name: redis_container
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - kronos-infra
+    healthcheck:
+      test: [ "CMD", "redis-cli","ping" ]
+      timeout: 10s
+      retries: 10
+
+  kronos-broker:
+    container_name: broker_container
+    entrypoint:
+      - /usr/bin/rpk
+      - redpanda
+      - start
+      - --memory
+      - 128M
+      - --smp
+      - '1'
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --node-id
+      - '0'
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://kronos-broker:29092,OUTSIDE://kronos-broker:9092
+    image: vectorized/redpanda:v21.5.5
+    networks:
+      - kronos-infra
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    logging:
+      driver: none
+
+  kronos-akhq:
+    container_name: broker_ui_container
+    image: tchiotludo/akhq:latest
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kronos-broker:9092"
+    ports:
+      - "8080:8080"
+    links:
+      - kronos-broker
+    networks:
+      - kronos-infra
+    logging:
+      driver: none
+
+volumes:
+  kronos_postgres:
+
+
+networks:
+  kronos-infra:
+    external: true

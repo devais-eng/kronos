@@ -1,0 +1,126 @@
+test_attributes:
+  attribute1: &attribute1
+    id: "attr_001"
+    name: "tire_pressure_psi"
+    type: "measurement"
+    # item_id: "bike_001"
+    value_type: "float"
+    value: "51"
+    created_by: "test_dataset"
+
+  attribute2: &attribute2
+    id: "attr_002"
+    name: "location"
+    type: "geolocation"
+    # item_id: "bike_001"
+    value_type: "string"
+    value: "38.690440,16.554828"
+    modified_by: "test_dataset"
+
+  attribute3: &attribute3
+    id: "attr_003"
+    name: "tire_pressure_psi"
+    type: "measurement"
+    # item_id: "bike_002"
+    value_type: "float"
+    value: "52.1"
+    modified_by: "test_dataset"
+
+  attribute4: &attribute4
+    id: "attr_004"
+    name: "location"
+    type: "geolocation"
+    # item_id: "bike_002"
+    value_type: "string"
+    value: "38.690441,16.554825"
+    modified_by: "test_dataset"
+
+  # Note: attributes #5 and #6 are not assigned to any item by default.
+  attribute5:
+    id: "attr_005"
+    name: "days_to_service"
+    type: "maintenance"
+    item_id: "station_001"
+    value_type: "int"
+    value: "363"
+    created_by: "test_dataset"
+
+  attribute6:
+    id: "attr_006"
+    name: "location"
+    type: "geolocation"
+    item_id: "station_001"
+    value_type: "string"
+    value: "38.690441,16.554825"
+    created_by: "test_dataset"
+
+# Note: item_id key is needed only when creating a spare attribute.
+# Since the items 1,2 get created by items api call, the server
+# already knows which one is the owner item.
+
+test_attributes_updated:
+  attribute1_updated:
+    name: "tire_pressure_bar"
+    value_type: "float"
+    value: "2.0"
+    modified_by: "test_dataset_patch"
+
+test_items:
+  item1:
+    id: "bike_001"
+    name: "bike_001_specialized"
+    type: "bike"
+    customer_id: "city_of_Carlopoli"
+    sync_policy: "DEFAULT_SYNC"
+    edge_mac: "th:is:is:aa:te:st"
+    created_by: "test_dataset"
+    attributes: [
+      *attribute1,
+      *attribute2
+    ]
+
+  item2:
+    id: "bike_002"
+    name: "bike_002_bianchi"
+    type: "bike"
+    customer_id: "city_of_Trento"
+    sync_policy: "DEFAULT_SYNC"
+    edge_mac: "th:is:is:aa:te:st"
+    created_by: "test_dataset"
+    attributes: [
+      *attribute3,
+      *attribute4
+    ]
+
+  item3:
+    id: "station_001"
+    name: "station_city_center"
+    type: "bike_station"
+    customer_id: "city_of_Trento"
+    sync_policy: "DEFAULT_SYNC"
+    edge_mac: "th:is:is:aa:te:st"
+    created_by: "test_dataset"
+    attributes: [ ]
+
+test_items_updated:
+  item1_updated:
+    id: "bike_001"
+    name: "bike_001_cannondale"
+    type: "mtb_full"
+    customer_id: "city_of_Trento"
+    sync_policy: "DEFAULT_SYNC"
+    edge_mac: "th:is:is:aa:te:st"
+    modified_by: "test_dataset"
+
+test_relations:
+  relation1:
+    # item3 -> item1
+    parent_id: "station_001"
+    child_id: "bike_001"
+    created_by: "test_dataset"
+
+  relation2:
+    # item3 -> item2
+    parent_id: "station_001"
+    child_id: "bike_002"
+    created_by: "test_dataset"

@@ -1,0 +1,42 @@
+[
+  {
+    "application": {
+      "package": "kronos.sync.telemetry",
+      "module": "app",
+      "name": "TelemetryApp"
+    },
+    "model": {
+      "request": {
+        "package": "kronos.sync.telemetry",
+        "module": "model",
+        "name": "TelemetryRequest"
+      },
+      "response": {}
+    },
+    "command": {
+      "package": "kronos.sync.telemetry",
+      "module": "model",
+      "name": "TelemetryCommand"
+    }
+  },
+  {
+    "application": {
+      "package": "kronos.sync.transaction",
+      "module": "app",
+      "name": "TransactionApp"
+    },
+    "model": {
+      "request": {
+        "package": "kronos.sync.transaction",
+        "module": "model",
+        "name": "TransactionRequest"
+      },
+      "response": {}
+    },
+    "command": {
+      "package": "kronos.sync.transaction",
+      "module": "model",
+      "name": "TransactionCommand"
+    }
+  }
+]
