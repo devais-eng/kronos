@@ -1,5 +1,3 @@
-[![Pipeline Status](https://gitlab.com/devaisgroup/kronos/kronos/badges/master/pipeline.svg)](https://gitlab.com/devaisgroup/kronos/kronos/commits/master)
-
 Kronos
 =========
 
