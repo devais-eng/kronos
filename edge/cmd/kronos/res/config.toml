@@ -1,0 +1,135 @@
+MaxProcs = 0
+
+[Logging]
+  Enabled = true
+  ToStderr = true
+  Level = "info"
+  ReportCaller = false
+  FormatAsJSON = false
+  PrettyPrint = false
+  ForceColors = false
+  [Logging.File]
+    Enabled = false
+    Filename = ""
+    MaxSize = "10 MB"
+    MaxBackups = 3
+    MaxAgeDays = 14
+    UseLocalTime = false
+    Compress = false
+
+[DB]
+  URL = "kronos.db"
+  SlowQueriesThreshold = 5000000000
+  VersionAlgorithm = "sha1"
+  AlwaysAutoMigrate = false
+  PaginationSize = 20
+  SoftDelete = false
+  SkipDefaultTransaction = false
+  CreateBatchSize = 100
+  WALEnabled = false
+  MemTempStoreEnabled = false
+  CacheSize = "0 B"
+  SynchronousFull = false
+  BusyTimeout = 0
+
+[DBus]
+  Enabled = false
+  UseSystemBus = false
+  ErrorsWithTrace = false
+  ReplyCreatedData = false
+  PathName = "/it/devais/kronos"
+  InterfaceName = "it.devais.kronos"
+  ItemsInterfaceName = "it.devais.kronos.Items"
+  RelationsInterfaceName = "it.devais.kronos.Relations"
+  AttributesInterfaceName = "it.devais.kronos.Attributes"
+  EventsInterfaceName = "it.devais.kronos.Events"
+  ConfigInterfaceName = "it.devais.kronos.Config"
+  [DBus.Serialization]
+    Type = "JSON"
+    JSONPrefix = ""
+    JSONIdent = ""
+
+[HTTP]
+  Enabled = false
+  DebugMode = false
+  PprofEnabled = false
+  ReplyCreatedData = true
+  Host = "localhost"
+  Port = 5000
+  Timeout = 5000000000
+  [HTTP.Sentry]
+    Enabled = true
+    WaitForDelivery = false
+    DeliveryTimeout = 0
+
+[Sentry]
+  Enabled = false
+  Debug = false
+  Dsn = ""
+  AttachStacktrace = false
+  SampleRate = 0.0
+  TracesSampleRate = 0.0
+
+[Prometheus]
+  Enabled = false
+  PushAddress = ""
+  PushUsername = ""
+  PushPassword = ""
+  PushJobName = "KronosPusher"
+  PushInterval = 5000000000
+  RefreshInterval = 5000000000
+  StartServer = true
+  Host = "localhost"
+  Port = 2112
+  Timeout = 5000000000
+
+[Sync]
+  ClientType = "MQTT"
+  PublishVersions = false
+  MaxEvents = 100
+  StopTimeout = 10000000000
+  MinSleepTime = 0
+  [Sync.Backoff]
+    InitialInterval = 500000000
+    RandomizationFactor = 0.5
+    Multiplier = 1.5
+    MaxInterval = 60000000000
+  [Sync.Sentry]
+    Enabled = false
+    WaitForDelivery = false
+    DeliveryTimeout = 0
+  [Sync.MQTT]
+    EnablePahoLogging = false
+    Scheme = "tcp"
+    Host = "localhost"
+    Port = 1883
+    ClientID = "kronos"
+    RandomizeClientID = false
+    Username = ""
+    Password = ""
+    SubQoS = 1
+    PubQoS = 1
+    CleanSession = true
+    KeepAlive = 60000000000
+    CommunicationTimeout = 30000000000
+    MaxRetries = 0
+    PubRetained = false
+    MaxEntitiesPerMessage = 50
+    OrderMatters = false
+    StorageType = "memory"
+    StoragePath = "./paho-messages"
+    ConnectedTopic = "/connected"
+    EventsTopic = "/events"
+    SyncTopic = "/sync"
+    CommandsTopic = "/commands"
+    CommandsResponseTopic = "/commands/{uuid}/response"
+    [Sync.MQTT.TLS]
+      Enabled = false
+      RootCAFile = ""
+      ClientCertFile = ""
+      ClientKeyFile = ""
+      SkipVerify = false
+    [Sync.MQTT.Serialization]
+      Type = "JSON"
+      JSONPrefix = ""
+      JSONIdent = ""
